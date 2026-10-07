@@ -1,0 +1,242 @@
+{
+  "reviewed_at": "2026-10-07",
+  "repositories": {
+    "auv_vla": {
+      "url": "https://github.com/2026-kmu-underwater-robot/auv_vla",
+      "branch": "main",
+      "commit": "cc4ada199d84290fcc55df6cfad003f1583fc3bf"
+    },
+    "auv_vla_gui": {
+      "url": "https://github.com/2026-kmu-underwater-robot/auv_vla_gui",
+      "branch": "main",
+      "commit": "ed1e4784ed2a79070070d17fd2ec5386a1955569"
+    },
+    "auv_vla_dataset_maker": {
+      "url": "https://github.com/2026-kmu-underwater-robot/auv_vla_dataset_maker",
+      "branch": "main",
+      "commit": "faad204577c4191da238bde0dac36f03fa971a42"
+    },
+    "auv_vla_data_collector": {
+      "url": "https://github.com/2026-kmu-underwater-robot/auv_vla_data_collector",
+      "branch": "master",
+      "commit": "4b4e2328f7b36a51c30b4929b8bf015f9396e4c3"
+    }
+  },
+  "model_fix_source": {
+    "url": "https://github.com/2026-kmu-underwater-robot/auv_vla/pull/2",
+    "commit": "c6d3f7e4c3f7ec4a5d3792df2f91d9fe533c12f5",
+    "merged_when_reviewed": false
+  },
+  "sensor_fix_reference": {
+    "url": "https://github.com/2026-kmu-underwater-robot/auv_vla_data_collector/pull/2",
+    "commit": "7aa22b89ca3ceb9d6f5cf6c8fc56df781999c613",
+    "merged_when_reviewed": false
+  },
+  "runtime_files": [
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/__init__.py",
+      "source_path": "gr00t/__init__.py",
+      "sha256": "dd7d5f5e544e1d2923bf4f1aa548504255938f58a6e74a119356573e6ce9e36e"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/data/__init__.py",
+      "source_path": "gr00t/data/__init__.py",
+      "sha256": "dd7d5f5e544e1d2923bf4f1aa548504255938f58a6e74a119356573e6ce9e36e"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/data/dataset.py",
+      "source_path": "gr00t/data/dataset.py",
+      "sha256": "bf958f03a63be55b8cc9e52a2b3f3fab4986b97c267182baf83bd00c1e47c753"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/data/embodiment_tags.py",
+      "source_path": "gr00t/data/embodiment_tags.py",
+      "sha256": "a084e4b9d89b7d191a16cec9449f85652e63249ad875637fdfeab3c762e2958f"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/data/schema.py",
+      "source_path": "gr00t/data/schema.py",
+      "sha256": "cfd217a3cde533cfd7baf2cf4cc297791398e69cdd86b5fbe5a889534dd885a5"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/data/transform/__init__.py",
+      "source_path": "gr00t/data/transform/__init__.py",
+      "sha256": "1b9970bfc166ead788c51ceb2a086e65ca967d95078a99af7f038ce0c922f5ae"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/data/transform/base.py",
+      "source_path": "gr00t/data/transform/base.py",
+      "sha256": "57855cdd1e069c60936b1573233b14ae140fa09cd4d7474738811bbafe230ef2"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/data/transform/concat.py",
+      "source_path": "gr00t/data/transform/concat.py",
+      "sha256": "11e610d907fe1dbf6ef5ac5f50ed5878d39270460264190d04bd7e46caff49a9"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/data/transform/state_action.py",
+      "source_path": "gr00t/data/transform/state_action.py",
+      "sha256": "4b158ecd78313344168a9249a3698b7ac9fab0f9fcffbaf038bb1617a7db6f3c"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/data/transform/video.py",
+      "source_path": "gr00t/data/transform/video.py",
+      "sha256": "b8af7b8187a72b5e5b8f729d36e47de3a3d157cb2d26ab22fc19f1181356123d"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/experiment/__init__.py",
+      "source_path": "gr00t/experiment/__init__.py",
+      "sha256": "dd7d5f5e544e1d2923bf4f1aa548504255938f58a6e74a119356573e6ce9e36e"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/experiment/data_config.py",
+      "source_path": "gr00t/experiment/data_config.py",
+      "sha256": "9e942b5f901b3c5949f3db24d9f431195fa9debffd48ec3c7cc61315bf964cf8"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/__init__.py",
+      "source_path": "gr00t/model/__init__.py",
+      "sha256": "279c47a1bcae3a98ac661206e04d0b1e9a15c73ce8262536431ba433589c3854"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/action_head/__init__.py",
+      "source_path": "gr00t/model/action_head/__init__.py",
+      "sha256": "dd7d5f5e544e1d2923bf4f1aa548504255938f58a6e74a119356573e6ce9e36e"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/action_head/action_encoder.py",
+      "source_path": "gr00t/model/action_head/action_encoder.py",
+      "sha256": "c5ec2088a521e6c3a477bfdcbf191ffc470a3edc8787ebf0ac25d2da4f380cc4"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/action_head/cross_attention_dit.py",
+      "source_path": "gr00t/model/action_head/cross_attention_dit.py",
+      "sha256": "1366e3f80c0e076953965eeb43d800cb354fdcdf681ab54f0c2ad8f1d6c9fe62"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/action_head/flow_matching_action_head.py",
+      "source_path": "gr00t/model/action_head/flow_matching_action_head.py",
+      "sha256": "6cd50bd9b3208573a44519d50264021120fac6320dae6999f2156512319da1f5"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/__init__.py",
+      "source_path": "gr00t/model/backbone/__init__.py",
+      "sha256": "00a176f47c8d95fd7e6cdbab55f293a6b4bd59f1efe97c47f35d061d99af73ef"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/added_tokens.json",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/added_tokens.json",
+      "sha256": "f6ec4747ee9acf6681f3e146371cf44bce6edd8d3018c504b976268857b6cc31"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/chat_template.json",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/chat_template.json",
+      "sha256": "12571c3e7ddce074f86a78daf21d9a81616c6f8eac19a20ca2fb558a0c9e759b"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/config.json",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/config.json",
+      "sha256": "e6957b163b6c62b685f69fd9d601e183509d109246290ad579d461692d925dba"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/configuration_eagle2_5_vl.py",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/configuration_eagle2_5_vl.py",
+      "sha256": "d1578a2d5b7654da9a5e4cb18acd5d9d92b04a227ddab9365c2e3265d6cf2f93"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/generation_config.json",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/generation_config.json",
+      "sha256": "7c36606c58ba30e8dfbc269cb542d93ee72889ebec5fcf3a5071b66451e8cfe1"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/image_processing_eagle2.py",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/image_processing_eagle2.py",
+      "sha256": "e5d152ebaecca99ad730b9efaaec1029ba242857857914cd8edcb0c1181f411c"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/image_processing_eagle2_5_vl_fast.py",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/image_processing_eagle2_5_vl_fast.py",
+      "sha256": "c972b2f11523176f8f908356374892cd5d358e1623f071c39ff82222820f9d88"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/merges.txt",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/merges.txt",
+      "sha256": "85407d96ccd088398c5df07b7c764ed04dcc084b0e746f70016c16968be5e490"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/modeling_eagle2_5_vl.py",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/modeling_eagle2_5_vl.py",
+      "sha256": "96554c1ca204cc6fb0bff636356b1f878d2ee47678b4a82e6378b59e98bb01d0"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/preprocessor_config.json",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/preprocessor_config.json",
+      "sha256": "2d860eacf203d617d4c7ecca4125513b35ace1827b39ef8c0c1e45276e30f0e9"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/processing_eagle2_5_vl.py",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/processing_eagle2_5_vl.py",
+      "sha256": "d01aa0f243c01404f2d08096dd7a8e7c29cd8368834f1f3ba8d47f6ba29e46b6"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/processor_config.json",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/processor_config.json",
+      "sha256": "27e81bc3e0035c64987dd06870025c301ea6c5dd02f5d091cb463b7c84432ef8"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/radio_model.py",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/radio_model.py",
+      "sha256": "5a4338eb7617606565189b3cec9827c4ca2559c9178ae3a9873e6fb37724d514"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/special_tokens_map.json",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/special_tokens_map.json",
+      "sha256": "a9086ab96352d779cbeb3665d1142a895540aec404d90641b2e2380d5dbb02b1"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/tokenizer_config.json",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/tokenizer_config.json",
+      "sha256": "f58bacf742418429534015ac1c4f7a1a555db55d3fba48858f38ebb75a2a5660"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle2_hg_model/vocab.json",
+      "source_path": "gr00t/model/backbone/eagle2_hg_model/vocab.json",
+      "sha256": "70f7cdb5ae22072d590b59fd726c9799e678a77701d32e87cd7b7106ed2a8ce8"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/backbone/eagle_backbone.py",
+      "source_path": "gr00t/model/backbone/eagle_backbone.py",
+      "sha256": "553d642fe1b5f7fca0b4d09a719a8df76ee21cca864d6292336c7656c5bc0b50"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/gr00t_n1.py",
+      "source_path": "gr00t/model/gr00t_n1.py",
+      "sha256": "e67c9db359d4c04bbfc94b35e478f3f17a955a7c39fed1f236f7ca70f1a96b67"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/policy.py",
+      "source_path": "gr00t/model/policy.py",
+      "sha256": "a0c54975f4c8b96d29cbafefd8244778ef5787ad32322e659b04e3143a921b7f"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/model/transforms.py",
+      "source_path": "gr00t/model/transforms.py",
+      "sha256": "cc01f608ad13a9fc69307687b87d876e75510daf5cf3fc5f762562dff3bc2e1e"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/py.typed",
+      "source_path": "gr00t/py.typed",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/utils/__init__.py",
+      "source_path": "gr00t/utils/__init__.py",
+      "sha256": "dd7d5f5e544e1d2923bf4f1aa548504255938f58a6e74a119356573e6ce9e36e"
+    },
+    {
+      "path": "auv_vla_reasoning/_vendor/gr00t/utils/video.py",
+      "source_path": "gr00t/utils/video.py",
+      "sha256": "2b119dcfeb164f9f840b8fe2483dbf177b989dc7e0ac921e7f324a3be155a3d2"
+    }
+  ]
+}

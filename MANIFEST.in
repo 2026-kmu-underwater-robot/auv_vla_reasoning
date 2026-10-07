@@ -1,0 +1,7 @@
+include LICENSE README.md package.xml
+recursive-include config *.yaml *.json
+recursive-include launch *.py
+recursive-include resource *
+recursive-include auv_vla_reasoning/_vendor/gr00t *.json *.txt py.typed
+global-exclude *.pyc
+global-exclude *.pyo

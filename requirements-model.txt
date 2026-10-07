@@ -1,0 +1,18 @@
+# Shared U0 inference dependencies. Install a matching torch/torchvision,
+# FlashAttention and PyTorch3D build for your GPU before this file.
+# The source versions follow auv_vla/pyproject.toml; no training service is installed.
+albumentations==1.4.18
+av==12.3.0
+decord==0.6.0
+dm_tree==0.1.8
+einops==0.8.1
+numpydantic==1.6.7
+opencv_python_headless==4.11.0.86
+pandas==2.2.3
+pydantic==2.10.6
+PyYAML==6.0.2
+timm==1.0.14
+tqdm==4.67.1
+transformers==4.51.3
+diffusers==0.30.2
+pyarrow==14.0.1
