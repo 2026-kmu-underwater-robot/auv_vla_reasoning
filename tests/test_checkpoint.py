@@ -4,6 +4,7 @@ import sys
 
 import pytest
 
+from auv_vla_reasoning.checkpoint import KMU_AUV_TRAINING_CONTRACT
 from auv_vla_reasoning.checkpoint import inspect_checkpoint as inspect_selected_checkpoint
 from auv_vla_reasoning.controls import STATE_DIMS
 
@@ -181,8 +182,14 @@ def test_kmu_auv_checks_required_19_state_statistics(checkpoint, runtime, settin
         if key != "validity"
     }
     path.write_text(json.dumps(metadata))
+    config_path = checkpoint / "config.json"
+    config = json.loads(config_path.read_text())
+    config["kmu_auv_training"] = KMU_AUV_TRAINING_CONTRACT
+    config_path.write_text(json.dumps(config))
     result = inspect_selected_checkpoint(checkpoint, runtime_config=runtime)
     assert result["data_config"] == "kmu_auv"
+    with pytest.raises(ValueError, match="trained with kmu_auv"):
+        inspect_checkpoint(checkpoint, runtime_config=runtime)
 
     body["statistics"]["state"]["depth"]["min"] = [float("nan")]
     path.write_text(json.dumps(metadata))
@@ -192,6 +199,45 @@ def test_kmu_auv_checks_required_19_state_statistics(checkpoint, runtime, settin
 
 def test_kmu_auv_does_not_accept_legacy_runtime_attestation(checkpoint, runtime):
     with pytest.raises(ValueError, match="data_config"):
+        inspect_selected_checkpoint(checkpoint, runtime_config=runtime)
+
+
+@pytest.mark.parametrize("mutation", ["state_order", "normalization", "profile"])
+def test_recorded_training_contract_rejects_mismatches(checkpoint, runtime, settings, mutation):
+    settings["data_config"] = "kmu_auv"
+    runtime.write_text(json.dumps(settings))
+    path = checkpoint / "config.json"
+    model = json.loads(path.read_text())
+    recorded = dict(KMU_AUV_TRAINING_CONTRACT)
+    if mutation == "state_order":
+        recorded["state_keys"] = list(reversed(recorded["state_keys"]))
+    elif mutation == "normalization":
+        recorded["state_normalization"] = "sin_cos"
+    else:
+        recorded["data_config"] = "other"
+    model["kmu_auv_training"] = recorded
+    path.write_text(json.dumps(model))
+    with pytest.raises(ValueError, match="training contract"):
+        inspect_selected_checkpoint(checkpoint, runtime_config=runtime)
+
+
+@pytest.mark.parametrize("key,value", [("pwm_span", 400), ("use_sim_time", True)])
+def test_recorded_collector_settings_must_match_runtime(checkpoint, runtime, settings, key, value):
+    settings["data_config"] = "kmu_auv"
+    runtime.write_text(json.dumps(settings))
+    path = checkpoint / "config.json"
+    model = json.loads(path.read_text())
+    recorded = dict(KMU_AUV_TRAINING_CONTRACT)
+    recorded["recording_settings"] = {
+        "action_channels": [5, 6, 3, 4],
+        "neutral_pwm": 1500,
+        "pwm_span": 300,
+        "use_sim_time": False,
+    }
+    recorded["recording_settings"][key] = value
+    model["kmu_auv_training"] = recorded
+    path.write_text(json.dumps(model))
+    with pytest.raises(ValueError, match="collector settings"):
         inspect_selected_checkpoint(checkpoint, runtime_config=runtime)
 
 

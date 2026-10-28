@@ -14,6 +14,25 @@ SETTINGS_KEYS = (
     "pwm_span",
     "expected_mode",
 )
+KMU_AUV_TRAINING_CONTRACT = {
+    "schema": 1,
+    "data_config": "kmu_auv",
+    "state_keys": [
+        "attitude",
+        "dvl_velocity",
+        "depth",
+        "prev_command",
+        "angular_velocity",
+        "linear_acceleration",
+        "altitude",
+    ],
+    "state_normalization": "min_max",
+    "action_order": ["surge", "sway", "heave", "yaw"],
+    "action_normalization": "min_max",
+    "fps": 10,
+    "action_horizon": 16,
+    "target_loss_weight": 0.0,
+}
 
 
 def _read_object(path: Path) -> dict:
@@ -98,6 +117,14 @@ def inspect_checkpoint(
             raise ValueError("Model must retain the KMU26 padded action dimension 32")
     if action_head.get("max_state_dim", 64) != 64:
         raise ValueError("Model must retain the KMU26 padded state dimension 64")
+    recorded_kmu = config.get("kmu_auv_training")
+    if recorded_kmu is not None:
+        if data_config != "kmu_auv":
+            raise ValueError("Checkpoint was trained with kmu_auv; select kmu_auv")
+        if not isinstance(recorded_kmu, dict) or any(
+            recorded_kmu.get(key) != value for key, value in KMU_AUV_TRAINING_CONTRACT.items()
+        ):
+            raise ValueError("Checkpoint kmu_auv training contract does not match inference")
     settings = config.get("kmu26_training")
     if data_config == "kmu26_auv_real_v2":
         if not isinstance(settings, dict):
@@ -115,6 +142,13 @@ def inspect_checkpoint(
         if settings is not None and any(reviewed[key] != settings[key] for key in SETTINGS_KEYS):
             raise ValueError("Runtime settings differ from the recorded training settings")
         settings = reviewed
+    if recorded_kmu is not None and "recording_settings" in recorded_kmu:
+        recording = recorded_kmu["recording_settings"]
+        if not isinstance(recording, dict) or any(
+            recording.get(key) != settings.get(key)
+            for key in ("action_channels", "neutral_pwm", "pwm_span", "use_sim_time")
+        ):
+            raise ValueError("Recorded collector settings differ from real runtime settings")
     try:
         validate_checkpoint(str(checkpoint), "new_embodiment", data_config=data_config)
     except (TypeError, AttributeError, KeyError) as exc:
