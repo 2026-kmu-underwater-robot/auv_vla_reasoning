@@ -110,6 +110,12 @@ def create_app(policy: object, metadata: dict):
     inference_lock = threading.Lock()
 
     def infer(observation):
+        if metadata.get("data_config") == "kmu_auv":
+            # The ROS contract carries validity for monitoring, but kmu_auv was
+            # trained without these four fields.
+            observation = {
+                key: value for key, value in observation.items() if key != "state.validity"
+            }
         with inference_lock:
             action = validate_action(policy.get_action(observation))
             return json_numpy.dumps(action)
@@ -150,6 +156,11 @@ def create_app(policy: object, metadata: dict):
             )
         try:
             observation = validate_observation(payload["observation"])
+            if (
+                metadata.get("data_config") == "kmu_auv"
+                and not (observation["state.validity"] == 1).all()
+            ):
+                raise ValueError("kmu_auv requires valid cameras, DVL velocity and altitude")
         except (ValueError, TypeError, OverflowError) as exc:
             raise HTTPException(status_code=422, detail=str(exc)) from exc
         try:

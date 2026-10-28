@@ -74,6 +74,26 @@ def test_plain_json_arrays_are_supported(observation):
     assert client.post("/act", json={"observation": plain}).status_code == 200
 
 
+def test_kmu_auv_sends_only_training_state_and_rejects_invalid_dvl(observation):
+    policy = Policy()
+    client = TestClient(create_app(policy, {"data_config": "kmu_auv"}))
+    observation["state.validity"][:] = 1
+    assert post(client, observation).status_code == 200
+    assert "state.validity" not in policy.observation
+    assert {key for key in policy.observation if key.startswith("state.")} == {
+        "state.attitude",
+        "state.dvl_velocity",
+        "state.depth",
+        "state.prev_command",
+        "state.angular_velocity",
+        "state.linear_acceleration",
+        "state.altitude",
+    }
+    observation["state.validity"][0, 2] = 0
+    assert post(client, observation).status_code == 422
+    assert policy.calls == 1
+
+
 @pytest.mark.parametrize(
     "kind",
     [

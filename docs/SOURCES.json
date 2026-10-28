@@ -32,6 +32,13 @@
     "commit": "7aa22b89ca3ceb9d6f5cf6c8fc56df781999c613",
     "merged_when_reviewed": false
   },
+  "kmu_auv_update": {
+    "reviewed_at": "2026-10-28",
+    "training_url": "https://github.com/2026-kmu-underwater-robot/auv_vla_training",
+    "training_commit": "3d2227df15ab352e53170d25f3e77d84f610e877",
+    "collector_url": "https://github.com/2026-kmu-underwater-robot/auv_vla_data_collector",
+    "collector_commit": "159fa7935aafb413390b9d49782e5eef093a10a8"
+  },
   "runtime_files": [
     {
       "path": "auv_vla_reasoning/_vendor/gr00t/__init__.py",
@@ -91,7 +98,7 @@
     {
       "path": "auv_vla_reasoning/_vendor/gr00t/experiment/data_config.py",
       "source_path": "gr00t/experiment/data_config.py",
-      "sha256": "9e942b5f901b3c5949f3db24d9f431195fa9debffd48ec3c7cc61315bf964cf8"
+      "sha256": "5863b794fd4389ca6472292167e6369504b6526471bf53ffc911ec4629bebddd"
     },
     {
       "path": "auv_vla_reasoning/_vendor/gr00t/model/__init__.py",

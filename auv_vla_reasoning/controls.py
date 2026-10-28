@@ -17,7 +17,9 @@ STATE_DIMS = {
 }
 
 
-def validate_checkpoint(path: str, embodiment: str = "new_embodiment") -> None:
+def validate_checkpoint(
+    path: str, embodiment: str = "new_embodiment", *, data_config: str = "kmu26_auv_real"
+) -> None:
     """Reject incompatible U0/GR00T checkpoints before allocating GPU memory."""
     metadata_file = Path(path).expanduser() / "experiment_cfg" / "metadata.json"
     if not metadata_file.is_file():
@@ -27,11 +29,29 @@ def validate_checkpoint(path: str, embodiment: str = "new_embodiment") -> None:
         )
     metadata = json.loads(metadata_file.read_text()).get(embodiment, {})
     modalities = metadata.get("modalities", {})
-    for name, dim in STATE_DIMS.items():
+    state_dims = {key: dim for key, dim in STATE_DIMS.items() if key != "validity"}
+    if data_config != "kmu_auv":
+        state_dims = STATE_DIMS
+    for name, dim in state_dims.items():
         if modalities.get("state", {}).get(name, {}).get("shape") != [dim]:
             raise ValueError(
                 f"Checkpoint lacks KMU26 state.{name} dimension {dim}; fine-tune first"
             )
+        if data_config == "kmu_auv":
+            stats = metadata.get("statistics", {}).get("state", {}).get(name, {})
+            try:
+                minimum = np.asarray(stats.get("min", []), dtype=float)
+                maximum = np.asarray(stats.get("max", []), dtype=float)
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"Invalid state.{name} normalization statistics") from exc
+            if (
+                minimum.shape != (dim,)
+                or maximum.shape != (dim,)
+                or not np.all(np.isfinite(minimum))
+                or not np.all(np.isfinite(maximum))
+                or np.any(minimum > maximum)
+            ):
+                raise ValueError(f"Checkpoint lacks valid state.{name} min/max statistics")
     if modalities.get("action", {}).get("motion", {}).get("shape") != [4]:
         raise ValueError("Checkpoint must predict action.motion [surge, sway, heave, yaw]")
     if not {"ego", "buoy_release"} <= modalities.get("video", {}).keys():

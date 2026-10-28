@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "data_config": "kmu26_auv_real",
+  "data_config": "kmu_auv",
   "data_source": "real",
   "use_sim_time": false,
   "action_channels": [5, 6, 3, 4],

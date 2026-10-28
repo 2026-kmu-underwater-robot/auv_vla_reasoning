@@ -6,7 +6,7 @@ from pathlib import Path
 
 from .controls import validate_checkpoint
 
-DATA_CONFIGS = ("kmu26_auv_real", "kmu26_auv_real_v2")
+DATA_CONFIGS = ("kmu_auv", "kmu26_auv_real", "kmu26_auv_real_v2")
 SETTINGS_KEYS = (
     "action_channels",
     "fps",
@@ -69,7 +69,7 @@ def _check_weights(checkpoint: Path) -> None:
 
 def inspect_checkpoint(
     checkpoint: str | Path,
-    data_config: str = "kmu26_auv_real",
+    data_config: str = "kmu_auv",
     runtime_config: str | Path | None = None,
 ) -> dict:
     """Return reviewed real command settings without importing torch.
@@ -116,7 +116,7 @@ def inspect_checkpoint(
             raise ValueError("Runtime settings differ from the recorded training settings")
         settings = reviewed
     try:
-        validate_checkpoint(str(checkpoint), "new_embodiment")
+        validate_checkpoint(str(checkpoint), "new_embodiment", data_config=data_config)
     except (TypeError, AttributeError, KeyError) as exc:
         raise ValueError("Malformed KMU26 checkpoint metadata") from exc
     _check_weights(checkpoint)

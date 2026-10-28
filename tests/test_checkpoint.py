@@ -4,8 +4,12 @@ import sys
 
 import pytest
 
-from auv_vla_reasoning.checkpoint import inspect_checkpoint
+from auv_vla_reasoning.checkpoint import inspect_checkpoint as inspect_selected_checkpoint
 from auv_vla_reasoning.controls import STATE_DIMS
+
+
+def inspect_checkpoint(checkpoint, data_config="kmu26_auv_real", runtime_config=None):
+    return inspect_selected_checkpoint(checkpoint, data_config, runtime_config)
 
 
 @pytest.fixture
@@ -151,7 +155,7 @@ def test_missing_or_incomplete_weights_rejected(checkpoint, runtime):
 def test_check_only_never_imports_torch(checkpoint, runtime):
     program = (
         "import runpy,sys; "
-        "sys.argv=['server','--check_only','--checkpoint',sys.argv[1],'--runtime_config',sys.argv[2]]; "
+        "sys.argv=['server','--check_only','--checkpoint',sys.argv[1],'--data_config','kmu26_auv_real','--runtime_config',sys.argv[2]]; "
         "runpy.run_module('auv_vla_reasoning.server',run_name='__main__'); "
         "assert 'torch' not in sys.modules; assert 'gr00t' not in sys.modules"
     )
@@ -162,6 +166,33 @@ def test_check_only_never_imports_torch(checkpoint, runtime):
     )
     assert result.returncode == 0, result.stderr
     assert json.loads(result.stdout)["data_config"] == "kmu26_auv_real"
+
+
+def test_kmu_auv_checks_required_19_state_statistics(checkpoint, runtime, settings):
+    settings["data_config"] = "kmu_auv"
+    runtime.write_text(json.dumps(settings))
+    path = checkpoint / "experiment_cfg/metadata.json"
+    metadata = json.loads(path.read_text())
+    body = metadata["new_embodiment"]
+    del body["modalities"]["state"]["validity"]
+    body["statistics"]["state"] = {
+        key: {"min": [-1] * dim, "max": [1] * dim}
+        for key, dim in STATE_DIMS.items()
+        if key != "validity"
+    }
+    path.write_text(json.dumps(metadata))
+    result = inspect_selected_checkpoint(checkpoint, runtime_config=runtime)
+    assert result["data_config"] == "kmu_auv"
+
+    body["statistics"]["state"]["depth"]["min"] = [float("nan")]
+    path.write_text(json.dumps(metadata))
+    with pytest.raises(ValueError, match="state.depth.*statistics"):
+        inspect_selected_checkpoint(checkpoint, runtime_config=runtime)
+
+
+def test_kmu_auv_does_not_accept_legacy_runtime_attestation(checkpoint, runtime):
+    with pytest.raises(ValueError, match="data_config"):
+        inspect_selected_checkpoint(checkpoint, runtime_config=runtime)
 
 
 @pytest.mark.parametrize(

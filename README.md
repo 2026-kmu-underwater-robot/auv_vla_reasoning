@@ -16,10 +16,11 @@ KMU26 **실물 AUV용 VLA 추론** 저장소입니다. 기존 `auv_vla`의 U0 �
 
 | 저장소 | 담당 기능 | 이 저장소와 연결되는 부분 |
 |---|---|---|
-| [auv_vla](https://github.com/2026-kmu-underwater-robot/auv_vla) | U0 모델·학습 | 학습된 체크포인트와 기존 입력 전처리 |
+| [auv_vla_training](https://github.com/2026-kmu-underwater-robot/auv_vla_training) | `kmu_auv` 모델 학습 | 19개 상태와 학습 시 min-max 전처리 |
+| [auv_vla](https://github.com/2026-kmu-underwater-robot/auv_vla) | U0 모델·학습 | 기존 23개 상태 체크포인트와 전처리 |
 | [auv_vla_gui](https://github.com/2026-kmu-underwater-robot/auv_vla_gui) | ROV·카메라 실행, 상태 표시 | GUI가 실행한 장비의 ROS 토픽 구독 |
-| [auv_vla_dataset_maker](https://github.com/2026-kmu-underwater-robot/auv_vla_dataset_maker) | 수집 대시보드·LeRobot v3 내보내기 | 동일한 23개 상태값·두 카메라·4축 조종 순서 |
-| [auv_vla_data_collector](https://github.com/2026-kmu-underwater-robot/auv_vla_data_collector) | 실물 시연 기록 | 센서 변환·유효성 처리 기준 |
+| [auv_vla_data_collector](https://github.com/2026-kmu-underwater-robot/auv_vla_data_collector) | 실물 시연 수집·U0 학습용 내보내기 | 23개 상태 저장, `kmu_auv`에서 19개 선택, 센서 변환 기준 |
+| [auv_vla_dataset_maker](https://github.com/2026-kmu-underwater-robot/auv_vla_dataset_maker) | 별도 수집 대시보드·LeRobot v3 내보내기 | 현재 U0 학습 로더는 v3를 직접 읽지 않음 |
 
 현재 GUI는 ROV/RealSense 런치만 실행합니다. 추론 버튼은 아직 없으므로 아래 명령으로
 이 저장소를 별도로 실행합니다. GUI의 ROV 런치를 다시 띄우거나 종료하지 않습니다.
@@ -27,6 +28,9 @@ KMU26 **실물 AUV용 VLA 추론** 저장소입니다. 기존 `auv_vla`의 U0 �
 데이터셋 제작기와 기존 수집기의 ROS 패키지 이름은 둘 다
 `kmu26_auv_vla_data_collector`입니다. 이 저장소는 그 패키지를 설치하거나 실행하지 않고
 `vla_observation`이라는 별도 노드에서 센서만 읽습니다. 녹화 서비스와 파일 저장도 없습니다.
+수집 기준은 `auv_vla_data_collector`의 `159fa7935aafb413390b9d49782e5eef093a10a8`입니다.
+해당 버전은 에피소드별 v2.0 구조를 출력하고 학습 코드의 `kmu_auv` 필드 매핑을 제공합니다.
+실제 전체 모델 학습의 성공까지 확인한 것은 아닙니다.
 
 ## 코드 위치
 
@@ -62,23 +66,30 @@ python -m pip install -e '.[server]'
 기존 모델의 환경 정의는 [원본 설정 사본](docs/upstream-model-pyproject.toml)에 있습니다.
 이 저장소의 기본 설치는 대용량 CUDA 패키지나 모델 가중치를 자동으로 받지 않습니다.
 
-### 현재 방식으로 학습한 실물 모델
+### `kmu_auv` 방식으로 학습한 실물 모델
 
-기존 `auv_vla`의 `kmu26_auv_real` 전처리를 그대로 선택합니다.
-이전 체크포인트에는 조종 설정이 저장되어 있지 않으므로
+기본 선택은 `auv_vla_training`의 `kmu_auv`입니다. 모델 입력은 자세(4), DVL 속도(3),
+수심(1), 이전 명령(4), 각속도(3), 가속도(3), 고도(1) 순서의 19개 물리값입니다.
+학습 설정과 같은 영상 처리와 각 상태·행동의 min-max 정규화를 사용하며, 통계는
+해당 체크포인트의 `experiment_cfg/metadata.json`에서 읽습니다. 상태 4개의 유효성은
+ROS/HTTP에서 검사하되 이 모델에 전달하지 않습니다. 이 모델은 DVL 무효를 구분할 수
+없으므로 두 카메라, DVL 속도 및 고도가 모두 유효할 때만 추론합니다.
+
+체크포인트에는 조종 설정과 학습 전처리가 자동으로 증명되지 않으므로
 `config/runtime.example.json`을 복사해 **학습 시 사용한 실제 설정**에 맞게 작성합니다.
-예제 값이 학습 조건을 보증하지는 않습니다.
+학습 기록에서 `kmu_auv` 사용을 확인한 모델에만 이 설정을 선택하세요. 예제나 메타데이터
+형식 검사는 학습 출처를 증명하지 않습니다.
 
 ```bash
 python -m auv_vla_reasoning.server \
   --checkpoint /path/to/real-checkpoint \
-  --data_config kmu26_auv_real \
+  --data_config kmu_auv \
   --runtime_config /path/to/reviewed-runtime.json \
   --check_only
 
 python -m auv_vla_reasoning.server \
   --checkpoint /path/to/real-checkpoint \
-  --data_config kmu26_auv_real \
+  --data_config kmu_auv \
   --runtime_config /path/to/reviewed-runtime.json \
   --host 127.0.0.1 --port 8000 --device cuda
 ```
@@ -86,13 +97,22 @@ python -m auv_vla_reasoning.server \
 체크포인트에는 모델 가중치, `config.json`, `experiment_cfg/metadata.json`이 필요합니다.
 원본 U0의 다른 로봇용 가중치나 시뮬레이터 전용 체크포인트는 이 경로에서 거부합니다.
 부표 분리 위치 예측(CAP)은 꺼진 모델만 지원합니다.
+특히 학습 코드가 CAP 비활성을 실행 중 설정에만 적용하고 `config.json`에 저장하지 않은
+체크포인트는 서버가 거부할 수 있습니다. 실제 학습 설정과 저장/재로딩 결과를 확인해야 하며,
+파일의 값을 임의로 바꾸는 것만으로 CAP 비활성 학습이 증명되지는 않습니다.
+
+### 기존 23개 상태 모델
+
+`auv_vla`의 `kmu26_auv_real`로 학습한 모델은 `--data_config kmu26_auv_real`을 명시하고,
+별도 runtime JSON의 `data_config`도 동일하게 바꿔 사용합니다. 기존 46개 sin/cos 입력을
+유지합니다. `kmu_auv`와 서로 다른 전처리이므로 체크포인트에 맞춰 선택해야 합니다.
 
 ### 수정된 v2 방식으로 새로 학습한 모델
 
 기존 모델 PR의 `kmu26_auv_real_v2`로 학습했다면 `--data_config kmu26_auv_real_v2`를
 명시합니다. `config.json`의 `kmu26_training` 설정을 읽으므로 별도 runtime JSON은
 필수가 아닙니다. 두 방식의 전처리는 다르며, 기존 가중치를 실행하면서 이름만 v2로
-바꾸면 안 됩니다. 기본 선택은 기존 모델과 같은 `kmu26_auv_real`입니다.
+바꾸면 안 됩니다. 기본 선택은 `kmu_auv`입니다.
 
 GPU 서버와 로봇 PC가 다르면 접근 가능한 서버 주소에 바인딩하고
 `config/real.yaml`의 `server_url`을 그 주소로 바꿉니다. HTTP API에는 인증 기능이
@@ -132,7 +152,7 @@ GUI의 RealSense 런치가 실행됐다고 전방·분리부 카메라가 모두
 학습과 같은 시야의 raw RGB 카메라를 쓰는 경우 해당 뷰의 `*_image_topic`을 바꾸고
 `*_image_transport: raw`를 지정합니다. `rgb8`, `bgr8`을 지원하며 프레임을 RGB로 전달합니다.
 
-| 입력 | 모델에 전달하는 값 |
+| 입력 | ROS 관측 노드가 수집하는 값 |
 |---|---|
 | 이전 조종값 | `[surge, sway, heave, yaw]` 4개 |
 | DVL | FLU 속도 3개, 고도 1개, 각각 유효성 표시 |
@@ -141,7 +161,8 @@ GUI의 RealSense 런치가 실행됐다고 전방·분리부 카메라가 모두
 | 유효성 | 카메라 두 개, DVL 속도, 고도 총 4개 |
 
 카메라 두 개·IMU·수심은 최신 값이 있어야 합니다. DVL이 없거나 무효하면 관련 값은
-0, 유효성은 0으로 표시합니다. `dvl_link`의 FRD → FLU 변환은 기존 수집기와 같습니다.
+0, 유효성은 0으로 표시합니다. `kmu_auv`에서는 이 상태를 모델에 보내지 않고 추론을
+거부합니다. `dvl_link`의 FRD → FLU 변환은 기존 수집기와 같습니다.
 다른 센서 장착 방향은 먼저 올바른 body frame으로 변환해야 합니다.
 
 ### 추론 활성화와 출력
